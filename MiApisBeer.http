@@ -1,0 +1,6 @@
+@MiApisBeer_HostAddress = http://localhost:5033
+
+GET {{MiApisBeer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
