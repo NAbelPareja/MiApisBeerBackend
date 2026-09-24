@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<IBeerRepository, BeerRepository>();
+builder.Services.AddScoped<IProveedoreRepository, ProveedoreRepository>();
 
 
 builder.Services.AddControllers().AddJsonOptions(options =>

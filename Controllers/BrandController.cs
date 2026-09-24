@@ -10,7 +10,6 @@ namespace MiApisBeer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class BrandController : ControllerBase
     {
 
@@ -19,15 +18,24 @@ namespace MiApisBeer.Controllers
         {
             _brandRepository = brandRepository;
         }
-
+        
         [HttpGet]
-        public async Task<ActionResult> GetBrands()
+        public async Task<ActionResult<IEnumerable<BrandDto>>> GetBrands()
         {
             var brands = await _brandRepository.GetAllAsyncc();
-            return Ok(brands);
+
+            var brandsDto = brands.Select(b => new BrandDto
+            {
+                BrandId = b.BrandId,
+                Name = b.Name,
+                proveedorId = (int)b.ProveedoresId,
+                ProveedorName = b.Proveedores != null ? b.Proveedores.Name : "Sin Proveedor"
+            });
+            return Ok(brandsDto);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Employee")]
         public async Task<ActionResult> Add([FromBody] BrandInsertDto brandDto)
         {
             var nameExist = await _brandRepository.NameExistsAsync(brandDto.Name);
@@ -47,19 +55,29 @@ namespace MiApisBeer.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> PutBrand(int id, [FromBody] BrandUpdateDto brandDto)
         {
+
             if(id != brandDto.Id)
             {
                 return BadRequest("El id del url no conincide con el del json");
             }
-            var nameExist = await _brandRepository.BrandExistsAsync(brandDto.Id);
-            if (nameExist.Name == null)
+
+            var brandExist = await _brandRepository.BrandExistsAsync(id);
+            if (brandExist.Name == null)
             {
                 return NotFound("La marca que intentas actualizar no existe.");
             }
 
-            nameExist.Name = brandDto.Name;
+            var proveedorExist = await _brandRepository.ProveedoreExistsAsync(brandDto.ProveedoresId);
+            if (!proveedorExist)
+            {
+                return BadRequest("No existe la proveedora");
+            }
+
+            brandExist.Name = brandDto.Name;
+            brandExist.ProveedoresId = brandDto.ProveedoresId;
 
             await _brandRepository.UpdateAsync();
             return NoContent();
@@ -67,6 +85,7 @@ namespace MiApisBeer.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteBrand(int id)
         {
             var brandExist = await _brandRepository.BrandExistsAsync(id);

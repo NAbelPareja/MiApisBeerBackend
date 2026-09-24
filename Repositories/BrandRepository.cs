@@ -13,7 +13,7 @@ namespace MiApisBeer.Repositories
         }
         public async Task<IEnumerable<Brand>> GetAllAsyncc()
         {
-            return await _context.Brands.ToListAsync();
+            return await _context.Brands.Include(b => b.Proveedores).ToListAsync();
         }
 
         public async Task<bool> NameExistsAsync(string name)
@@ -25,7 +25,10 @@ namespace MiApisBeer.Repositories
             return await _context.Brands.FindAsync(brandId);
         }
 
-
+        public async Task<bool> ProveedoreExistsAsync(int proveedoreId)
+        {
+            return await _context.Proveedores.AnyAsync(b => b.ProveedoresId == proveedoreId);
+        }
         public async Task AddAsync(Brand brand)
         {
             _context.Brands.Add(brand);

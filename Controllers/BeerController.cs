@@ -11,7 +11,6 @@ namespace MiApisBeer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class BeerController : ControllerBase
     {
 
@@ -39,6 +38,7 @@ namespace MiApisBeer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Employee")]
         public async Task<ActionResult> Add([FromBody] BeerInsertDto beerDto)
         {
             var brandExist = await _beerRepository.BrandExistsAsync(beerDto.BrandId);
@@ -65,6 +65,7 @@ namespace MiApisBeer.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> PutBeer(int id, [FromBody] BeerUpdateDto beerDto)
         {
             if (id != beerDto.Id)
@@ -94,6 +95,7 @@ namespace MiApisBeer.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteBeer(int id)
         {
             var beerExist = await _beerRepository.BeerExistsAsync(id);

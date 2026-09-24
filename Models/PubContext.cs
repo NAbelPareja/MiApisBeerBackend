@@ -19,6 +19,8 @@ public partial class PubContext : DbContext
 
     public virtual DbSet<Brand> Brands { get; set; }
 
+    public virtual DbSet<Proveedore> Proveedores { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -49,6 +51,25 @@ public partial class PubContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(10)
                 .IsFixedLength();
+
+            entity.HasOne(d => d.Proveedores).WithMany(p => p.Brands)
+                .HasForeignKey(d => d.ProveedoresId)
+                .HasConstraintName("FK_Brands_Proveedores");
+        });
+
+        modelBuilder.Entity<Proveedore>(entity =>
+        {
+            entity.HasKey(e => e.ProveedoresId).HasName("PK__Proveedo__B2344C02FA00C755");
+
+            entity.Property(e => e.Name)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.Ruc)
+                .HasMaxLength(11)
+                .IsUnicode(false);
+            entity.Property(e => e.Telefono)
+                .HasMaxLength(20)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -59,6 +80,10 @@ public partial class PubContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.PasswordHash).IsUnicode(false);
+            entity.Property(e => e.Role)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasDefaultValue("Employee");
         });
 
         OnModelCreatingPartial(modelBuilder);

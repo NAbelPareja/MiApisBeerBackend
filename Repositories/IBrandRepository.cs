@@ -7,7 +7,8 @@ namespace MiApisBeer.Repositories
          Task<IEnumerable<Brand>> GetAllAsyncc();
          Task<bool> NameExistsAsync(string name);
          Task<Brand?> BrandExistsAsync(int brandId);
-         Task AddAsync(Brand brand);
+        Task<bool> ProveedoreExistsAsync(int proveedoreId);
+        Task AddAsync(Brand brand);
          Task UpdateAsync();
          Task DeleteAsync(Brand brand);
     }

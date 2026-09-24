@@ -59,7 +59,8 @@ namespace MiApisBeer.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UsedId.ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role)
             };
             // leemos la clave secreta que gaurdamos en el json
             var keyString = _configuration.GetSection("Jwt:Key").Value;
