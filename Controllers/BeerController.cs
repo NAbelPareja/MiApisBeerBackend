@@ -30,7 +30,7 @@ namespace MiApisBeer.Controllers
             {
                 BeerId = b.BeerId,
                 Name = b.Name,
-                BrandId = (int)b.BrandId,
+                BrandId = b.BrandId ?? 0,
                 BrandName = b.Brand != null ? b.Brand.Name : "Sin Marca"
             });
 

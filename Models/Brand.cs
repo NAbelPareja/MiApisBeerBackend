@@ -7,7 +7,7 @@ public partial class Brand
 {
     public int BrandId { get; set; }
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public int? ProveedoresId { get; set; }
 

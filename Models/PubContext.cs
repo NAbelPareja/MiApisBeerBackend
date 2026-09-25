@@ -36,11 +36,12 @@ public partial class PubContext : DbContext
             entity.ToTable("Beeer");
 
             entity.Property(e => e.Name)
-                .HasMaxLength(10)
-                .IsFixedLength();
+                .HasMaxLength(150)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.Brand).WithMany(p => p.Beeers)
                 .HasForeignKey(d => d.BrandId)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Beeer_Brand");
         });
 
@@ -49,11 +50,12 @@ public partial class PubContext : DbContext
             entity.ToTable("Brand");
 
             entity.Property(e => e.Name)
-                .HasMaxLength(10)
-                .IsFixedLength();
+                .HasMaxLength(150)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.Proveedores).WithMany(p => p.Brands)
                 .HasForeignKey(d => d.ProveedoresId)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Brands_Proveedores");
         });
 

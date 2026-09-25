@@ -23,12 +23,12 @@ namespace MiApisBeer.Controllers
         public async Task<ActionResult<IEnumerable<BrandDto>>> GetBrands()
         {
             var brands = await _brandRepository.GetAllAsyncc();
-
+              
             var brandsDto = brands.Select(b => new BrandDto
             {
                 BrandId = b.BrandId,
                 Name = b.Name,
-                proveedorId = (int)b.ProveedoresId,
+                proveedorId = b.ProveedoresId ?? 0,
                 ProveedorName = b.Proveedores != null ? b.Proveedores.Name : "Sin Proveedor"
             });
             return Ok(brandsDto);
@@ -47,10 +47,11 @@ namespace MiApisBeer.Controllers
 
             var brand = new Brand
             {
-                Name = brandDto.Name
+                Name = brandDto.Name,
+                ProveedoresId = brandDto.ProveedorId
             };
 
-            _brandRepository.AddAsync(brand);
+            await _brandRepository.AddAsync(brand);
             return CreatedAtAction(nameof(GetBrands), new { id = brand.BrandId }, brand);
         }
 
@@ -89,12 +90,12 @@ namespace MiApisBeer.Controllers
         public async Task<ActionResult> DeleteBrand(int id)
         {
             var brandExist = await _brandRepository.BrandExistsAsync(id);
-            if (brandExist.BrandId == null)
+            if (brandExist == null)
             {
                 return NotFound("El valor a eliminar no existe");
             }
-            _brandRepository.DeleteAsync(brandExist);
-
+            await _brandRepository.DeleteAsync(brandExist);
+           
             return NoContent();
         }
     }

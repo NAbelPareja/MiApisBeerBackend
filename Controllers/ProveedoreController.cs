@@ -36,6 +36,8 @@ namespace MiApisBeer.Controllers
             var proveedore = new Proveedore
             {
                 Name = proveedoredto.Name,
+                Ruc = proveedoredto.Ruc,
+                Telefono = proveedoredto.Telefono
             };
 
             _proveedoreRepository.AddAsync(proveedore);
@@ -56,6 +58,8 @@ namespace MiApisBeer.Controllers
                 return NotFound("El proveedor que intentas actualizar no existe.");
             }
             proveedorExist.Name = proveedore.Name;
+            proveedorExist.Ruc = proveedore.Ruc;
+            proveedorExist.Telefono = proveedore.Telefono;
             await _proveedoreRepository.UpdateAsync();
             return NoContent();
         }
